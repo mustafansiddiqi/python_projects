@@ -1,0 +1,47 @@
+#EDA Case Study
+import pandas as pd
+df = pd.read_csv('/Users/mustafa/Mustafa Mac/Atomcamp/AtomcampPython/COVID clinical trials.csv')
+#Shape
+print("Table shape is: ")
+print(df.shape)
+#head and tail
+print("First 5 rows are: ")
+print(df.head(5))
+print("Last 5 rows are: ")
+print(df.tail(5))
+print("Column info is as follows: ")
+print(df.info())
+print("Statistical info is as follows: ")
+print(df.describe())
+#First Study
+print(df.iloc[0])
+#NCT04595136 Study
+print("NCT04595136 Study Data")
+print(df.loc[df['NCT Number'] == 'NCT04595136'])
+#Recruiting Trials
+print("Recruiting Trials Data")
+print(df.loc[df['Status'] == 'Recruiting'], ['Start Date','Sponsor/Collaborators'])
+print("First 5 rows data")
+print(df.loc[0:4, ['Title', 'Conditions', 'Outcome Measures']])
+print("Last 3 rows data")
+print(df.loc[-3:, ['Completion Date', 'URL']])
+#Missing Values
+print("Missing Values")
+print(df.isna())
+#Duplicates
+print("Sum of Duplicates")
+print(df.duplicated().sum())
+#Enrollment Threshold
+print("Enrollment Threshold")
+enrollment_threshold_str = input("Please input the Enrollment Threshold: ")
+enrollment_threshold = int(enrollment_threshold_str)
+print(df.loc[df['Enrollment'] >= enrollment_threshold], ['Title'])
+#No Results
+print("No Results")
+print(df.loc[df['Study Results'] == 'No Results Available'], ['Title'])
+#COVID Related
+print("Covid Related Studies")
+print(df.loc[df['Conditions'] == 'Covid 19'], ['Title'])
+#Start Date
+print("Start Date after January 1, 2020")
+print(df.loc[df['Start Date'] >= 'January 1, 2020'], ['Title'])
