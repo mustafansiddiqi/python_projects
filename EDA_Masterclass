@@ -1,0 +1,493 @@
+# Import required libraries for data analysis and visualization
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the HR Employee Attrition CSV data file into a DataFrame
+df = pd.read_csv(r'D:/ML by aymen/WA_Fn-UseC_-HR-Employee-Attrition.csv')
+df
+
+# Display the first 5 rows of the DataFrame
+df.head()
+
+# Display the first 20 rows of the DataFrame
+df.head(20)
+
+# Display the last 5 rows of the DataFrame
+df.tail()
+
+# Display the last 10 rows of the DataFrame
+df.tail(10)
+
+# Display the DataFrame index information
+df.index
+
+# Select and display all columns with object (string) data type
+df_obj = df.select_dtypes(['object'])
+df_obj
+
+# Print a concise summary of the DataFrame including data types and non-null counts
+df.info()
+
+# Get the shape (number of rows and columns) of the DataFrame
+df.shape
+
+# Generate descriptive statistics for numerical columns
+df.describe()
+
+# Generate descriptive statistics for object (categorical) columns
+df.describe(include=['object'])
+
+# Generate descriptive statistics for boolean and object columns
+df.describe(include=['bool', 'object'])
+
+# List all column names in the DataFrame
+df.columns
+
+# Remove leading and trailing whitespace from column names
+df.columns.str.strip()
+
+# Create a sample Pandas Series with extra whitespace and special characters
+s = pd.Series(['1. Bat.  ', '2. Dog!\n', '3. fox?\t', np.nan])
+s
+
+# Remove specified characters from both ends of each string in the Series
+s.str.strip('123.!? \n\t')
+
+# Replace the substring "cy" with an empty string in the Series
+s = pd.Series(['1. Bat cy', '2. Dog cy', '3. fox cy', np.nan])
+s1 = s.str.replace("cy", "")
+s1
+
+# Display data types of all columns in the DataFrame
+df.dtypes
+
+# Re-select object-type columns from the DataFrame (for later inspection)
+df_obj = df.select_dtypes(['object'])
+df_obj
+
+# Loop through each column and print the number of unique values and the unique values themselves
+for column in df:
+    print("Column", column, "unique values are:", df[column].nunique())
+    print(df[column].unique())
+    print("-------------------------")
+
+# Loop through each column and print the series info (note: .info() prints directly and returns None)
+for column in df:
+    print("Column", column, "value counts is:", df[column].info())
+    print("-------------------------------------------------------")
+
+# Display the count of each unique value in the 'WorkLifeBalance' column
+df['WorkLifeBalance'].value_counts()
+
+# Loop through each column and print the value counts for that column
+for column in df:
+    print("Column", column, "value counts is:", df[column].value_counts())
+    print("-------------------------------------------------------")
+
+# Check for null values in the 'Attrition' column
+df['Attrition'].isnull()
+
+# Count the number of missing values in each column of the DataFrame
+df.isna().sum()
+
+# (For another DataFrame copy) Check for missing values
+df1copy.isnull()
+
+# Sum up the missing values in each column of df1copy
+df1copy.isnull().sum()
+
+# Display summary info for the df1copy DataFrame
+df1copy.info()
+
+# Loop through each column in df and print the number of missing values
+for column in df:
+    print("column name:", column, "- missing values", df[column].isnull().sum())
+    print("------------------------------------------------------------------")
+
+# Define a function to display a summary of the DataFrame
+def data(data):
+    print("-----------Columns-----------")
+    print(data.columns)
+    print("----------Info-----------")
+    print(data.info())
+    print("----------Shape-----------")
+    print(data.shape)
+    print("----------Duplicate Rows-----------")
+    print(data.duplicated())
+    print("----------Column Data Types-----------")
+    print(data.dtypes)
+    print("----------Missing Values per Column-----------")
+    print(data.isnull().sum())
+    print("----------End of Summary-----------")
+
+# Call the summary function on the DataFrame
+data(df)
+
+# Filter the DataFrame to show only rows where 'Attrition' is 'Yes'
+df[df['Attrition'] == 'Yes']
+
+# Group the DataFrame by 'WorkLifeBalance' and compute the mean of numerical columns for each group
+df.groupby(['WorkLifeBalance']).mean()
+
+# Filter rows where 'BusinessTravel' is 'Travel_Frequently' and 'Attrition' is 'Yes'
+df[(df['BusinessTravel'] == 'Travel_Frequently') & (df['Attrition'] == 'Yes')]
+
+# Display the entire DataFrame
+df
+
+# Group the DataFrame by 'WorkLifeBalance' and compute the mean again (repeat example)
+df.groupby(['WorkLifeBalance']).mean()
+
+# Group by 'WorkLifeBalance' and calculate the mean 'HourlyRate'
+gbwb = df.groupby(['WorkLifeBalance'])['HourlyRate'].mean()
+gbwb
+
+# Group by 'YearsInCurrentRole' and compute the mean of 'Age' and 'HourlyRate'
+df.groupby(['YearsInCurrentRole'])[['Age', 'HourlyRate']].mean()
+
+# Aggregate statistics by 'JobRole': mean and std of 'Age', mean and count of 'HourlyRate', and unique counts of 'Education'
+dfgf = pd.DataFrame(df.groupby(['JobRole']).agg({
+    'Age': [np.mean, np.std],
+    'HourlyRate': [np.mean, 'count'],
+    'Education': 'nunique'
+}))
+dfgf
+
+# Add a new column 'index_backwards' with descending index numbers
+df['index_backwards'] = range(len(df), 0, -1)
+df['index_backwards']
+
+# Display the DataFrame (again)
+df
+
+# Get the minimum value in the 'Age' column
+df.Age.min()
+
+# Get the maximum value in the 'Age' column
+df.Age.max()
+
+# Access the 'Age' column from the DataFrame
+df["Age"]
+
+# Create a new column 'Agerange1' that bins 'Age' into 4 quantile-based intervals
+df['Agerange1'] = pd.qcut(df["Age"], q=4)
+print(df[['Age', 'Agerange1']])
+
+# Display the unique quantile intervals created in 'Agerange1'
+df['Agerange1'].unique()
+
+# Create a new column 'Agerange2' that bins 'Age' into 10 quantile-based intervals with 4 decimal precision
+df['Agerange2'] = pd.qcut(df["Age"], q=10, precision=4)
+print(df['Agerange2'])
+print(df[['Age', 'Agerange2']])
+
+# Display the unique quantile intervals in 'Agerange2'
+df['Agerange2'].unique()
+
+# Count the occurrences of each unique value in the 'Age' column
+df['Age'].value_counts()
+
+# Count the occurrences of each interval in the 'Agerange1' column
+df['Agerange1'].value_counts()
+
+# Create a new column 'Agerange5' that bins 'Age' into 5 quantile-based intervals with no decimal precision
+df['Agerange5'] = pd.qcut(df["Age"], q=5, precision=0)
+print(df['Agerange5'])
+
+# Count the occurrences of each interval in the 'Agerange5' column
+df['Agerange5'].value_counts()
+
+# Create a new column 'age ranges 3' that bins 'Age' into custom quantile ranges with specified labels
+bin_labels_5 = ['17-30', '30-36', '36-43', '43-60']
+df['age ranges 3'] = pd.qcut(df["Age"], q=[0, 0.25, 0.5, 0.75, 1], labels=bin_labels_5)
+df.head()
+
+# Display the 'Age', 'age ranges 3', and 'Agerange1' columns to compare the binning results
+df[['Age', 'age ranges 3', 'Agerange1']]
+
+# Filter the DataFrame for rows where 'Age' is greater than 40
+df[df['Age'] > 40]
+
+# Filter the DataFrame with multiple conditions: Age > 40 and BusinessTravel is 'Travel_Rarely', or DailyRate > 500
+df[(df['Age'] > 40) & (df['BusinessTravel'] == 'Travel_Rarely') | (df['DailyRate'] > 500)]
+
+# Count the occurrences of each custom age range in 'age ranges 3'
+df['age ranges 3'].value_counts()
+
+# Check for duplicate rows in the DataFrame (returns a boolean Series)
+df.duplicated()
+
+# Loop through each column and check for duplicate values in that column
+for column in df:
+    duplicate_values = df[column].duplicated()
+    print(duplicate_values)
+    print("------------------------------------------------------")
+
+# Count the total number of duplicate rows in the DataFrame
+df.duplicated().sum()
+
+# Remove duplicate rows from the DataFrame based on the 'EmployeeNumber' column, keeping the first occurrence
+df = df.drop_duplicates(subset=['EmployeeNumber'], keep='first')
+df
+
+# Print the maximum and minimum values of the 'MonthlyIncome' column
+print(df['MonthlyIncome'].max())
+print(df['MonthlyIncome'].min())
+
+# Print the number of unique values in the 'MonthlyIncome' column
+print(df['MonthlyIncome'].nunique())
+
+# Bin 'MonthlyIncome' into categories with custom labels and (as an example) also bin 'Age'
+cut_labels_4 = ['copper', 'silver', 'gold', 'platinum', 'diamond']
+cut_bins = [1000, 4000, 6000, 12000, 15000, 200000]
+df['Income package '] = pd.cut(df['MonthlyIncome'], bins=cut_bins, labels=cut_labels_4)
+df['Age range'] = pd.cut(df['Age'], bins=cut_bins, labels=cut_labels_4)
+
+# Display 'MonthlyIncome' and the newly created 'Income package ' columns
+df[['MonthlyIncome', 'Income package ']]
+
+# Count the occurrences of each income package category
+df['Income package '].value_counts()
+
+# Display the data type of the 'Income package ' column
+df['Income package '].dtypes
+
+# Plot a histogram of the 'Income package ' categorical data
+plt.hist(df['Income package '])
+plt.show()
+
+# Plot a histogram of the 'MonthlyIncome' values
+plt.hist(df['MonthlyIncome'])
+plt.show()
+
+# Display the 'Income package ' and 'MonthlyIncome' columns together
+df[['Income package ', 'MonthlyIncome']]
+
+# Filter and display rows where 'Income package ' is 'platinum'
+df[['MonthlyIncome', 'Income package ']][df['Income package '] == 'platinum']
+
+# Create a new DataFrame with a MultiIndex and sample data
+midx = pd.MultiIndex(levels=[['llama', 'cow', 'falcon'],
+                              ['speed', 'weight', 'length']],
+                     codes=[[0, 0, 0, 1, 1, 1, 2, 2, 2],
+                            [0, 1, 2, 0, 1, 2, 0, 1, 2]])
+df2 = pd.DataFrame(index=midx, columns=['big', 'small'],
+                   data=[[45, 30], [200, 100], [1.5, 1],
+                         [30, 20], [250, 150], [1.5, 0.8],
+                         [320, 250], [1, 0.8], [0.3, 0.2]])
+df2
+
+# Drop the row with MultiIndex ('falcon', 'weight') from df2
+df2.drop(index=('falcon', 'weight'))
+
+# Loop through each column and infer its data type
+for column in df.columns:
+    print(column, ":", pd.api.types.infer_dtype(df[column]))
+
+# Separate columns into numerical and non-numerical based on data type
+df_numeric = df.select_dtypes(include=[np.number])
+numeric_cols = df_numeric.columns.values
+df_non_numeric = df.select_dtypes(exclude=[np.number])
+non_numeric_cols = df_non_numeric.columns.values
+
+# Display the list of non-numerical column names
+non_numeric_cols
+
+# Display the list of numerical column names
+numeric_cols
+
+# Create a DataFrame with mixed data types and convert the 'Age' column to integer using astype()
+data_frame = pd.DataFrame([['tom', 10], ['nick', '15'], ['juli', 14.8]], columns=['Name', 'Age'])
+data_frame["Age"] = data_frame["Age"].astype(int)
+for column in data_frame.columns:
+    print(column, ":", pd.api.types.infer_dtype(data_frame[column]))
+print(data_frame)
+
+# Convert mixed data types using to_numeric() for the 'Age' column
+data_frame = pd.DataFrame([['tom', 10], ['nick', '15'], ['juli', 14.8]], columns=['Name', 'Age'])
+data_frame["Age"] = data_frame["Age"].apply(lambda x: pd.to_numeric(x, errors='ignore', downcast="integer"))
+for column in data_frame.columns:
+    print(pd.api.types.infer_dtype(data_frame[column]))
+
+# Example of using to_numeric with downcasting on a float value
+x = 3.2
+y = pd.to_numeric(x, downcast="integer")
+y
+
+# Import the missingno library for visualizing missing data (install if necessary)
+import missingno as msno
+
+# Load another dataset and create a copy for manipulation
+df1 = pd.read_csv('D:/ML by aymen/ML 3/xeek_train_subset.csv')
+df1copy = df1.copy()
+df1copy
+
+# Generate a bar plot of missing data using missingno
+bar = msno.bar(df1)
+bar
+
+# Calculate the percentage of missing values for each column in df1 and store in a DataFrame
+values_list = list()
+cols_list = list()
+for col in df1.columns:
+    pct_missing = np.mean(df1[col].isnull()) * 100
+    cols_list.append(col)
+    values_list.append(pct_missing)
+pct_missing_df1 = pd.DataFrame()
+pct_missing_df1['col'] = cols_list
+pct_missing_df1['pct_missing'] = values_list
+
+# Display the DataFrame with missing value percentages
+pct_missing_df1
+
+# Plot a bar chart of columns with missing values greater than 0%
+pct_missing_df1.loc[pct_missing_df1.pct_missing > 0].plot(kind='bar', figsize=(12, 8))
+plt.show()
+
+# Display a heatmap of missing values using missingno
+msno.heatmap(df1)
+
+# Display a matrix plot of missing values using missingno
+msno.matrix(df1)
+
+# Plot a heatmap showing the location of missing values in df1copy
+sns.heatmap(df1copy.isna())
+
+# Plot a transposed heatmap of missing values for better readability of column names
+sns.heatmap(df1.isna().transpose())
+
+# Print the percentage of missing values for each column in df1
+print("Amount of missing values in - ")
+for column in df1.columns:
+    percentage_missing = np.mean(df1[column].isna())
+    print(f'{column} : {round(percentage_missing * 100)}%')
+
+# Identify columns with more than 40% missing values and store them in a list
+_40_pct_missing_cols_list = list(pct_missing_df1.loc[pct_missing_df1.pct_missing > 40, 'col'].values)
+_40_pct_missing_cols_list
+
+# Count missing values in the 'RSHA' column of df1copy
+df1copy['RSHA'].isna().sum()
+
+# Calculate the mean of the 'RSHA' column and store it in df1rsha
+df1rsha = df1copy['RSHA'].mean()
+df1rsha
+
+# Impute missing values in 'RSHA' with the column mean and verify that there are no missing values
+df1copy['RSHA'] = df1copy['RSHA'].fillna(df1copy['RSHA'].mean())
+df1copy['RSHA'].isna().sum()
+
+# Print unique values in the 'RSHA' column after imputation
+print(df1copy['RSHA'].unique())
+
+# Create a new DataFrame dfmean by filling missing values in df with the mean of each column
+dfmean = df.fillna(df.mean())
+dfmean
+
+# (Optional) Fill missing values with median (commented out) and display df1copy
+# dfmedian = df.fillna(df.median())
+df1copy
+
+# Print max, min, unique values, and number of unique values for the 'DTC' column in df1copy
+print(df1copy['DTC'].max())
+print(df1copy['DTC'].min())
+print(df1copy['DTC'].unique())
+print(df1copy['DTC'].nunique())
+
+# Fill missing values in df for each column using the mode (most frequent value) and print missing counts
+for columns in df:
+    df[columns] = df[columns].fillna(df[columns].mode()[0])
+print(df.isna().sum())
+
+# Display the first 30 rows of df after imputation
+df.head(30)
+
+# Remove rows with any missing values from df and display the resulting shape
+dfremoved = df.dropna(axis=0)
+dfremoved.shape
+
+# Display the column names of df1copy
+df1copy.columns
+
+# Fill missing values in the 'FORMATION' column of df1copy with the string 'ffill' and verify no missing values remain
+df1copy.FORMATION = df1copy.FORMATION.fillna('ffill')
+df1copy.FORMATION.isnull().sum()
+
+# Fill missing values in the 'ROP' column of df1copy with the string 'bfill' and verify no missing values remain
+df1copy.ROP = df1copy.ROP.fillna('bfill')
+df1copy.ROP.isnull().sum()
+
+# Filter df for rows where Department is 'Research & Development' and Education equals 2
+df.loc[(df.Department == 'Research & Development') & (df.Education == 2)]
+
+# Create a new column 'current status' and set its value to 'employed' for all rows, then display it
+df["current status"] = 'employed'
+df['current status']
+
+# Filter df for rows where 'EducationField' is either 'Medical' or 'Life Sciences'
+df.loc[df.EducationField.isin(['Medical', 'Life Sciences'])]
+
+# Import datetime module and print the current date and time
+import datetime
+now = datetime.datetime.now()
+print(now)
+
+# Get and print the current date
+current_date = datetime.date.today()
+print(current_date)
+
+# Print the attributes of the datetime module
+import datetime
+print(dir(datetime))
+
+# Print the current year, month, and day using the date class
+from datetime import date
+today = date.today()
+print("Current year:", today.year)
+print("Current month:", today.month)
+print("Current day:", today.day)
+
+# Create a datetime object and print its components and timestamp
+from datetime import datetime
+a = datetime(2022, 12, 28, 23, 55, 59, 342380)
+print("Year =", a.year)
+print("Month =", a.month)
+print("Hour =", a.hour)
+print("Minute =", a.minute)
+print("Timestamp =", a.timestamp())
+
+# Format the current datetime into different string representations and print them
+from datetime import datetime
+now = datetime.now()
+t = now.strftime("%H:%M:%S")
+print("Time:", t)
+s1 = now.strftime("%m/%d/%Y, %H:%M:%S")
+print("s1:", s1)
+s2 = now.strftime("%d/%m/%Y, %H:%M:%S")
+print("s2:", s2)
+
+# Compute the correlation matrix for df and plot it as a heatmap with annotations
+corr = df.corr()
+corheat = sns.heatmap(corr, xticklabels=corr.columns, yticklabels=corr.columns,
+                      annot=True, cmap=sns.diverging_palette(220, 20, as_cmap=True))
+corheat
+
+# Generate a pairplot for all numerical variables in df
+pairs = sns.pairplot(df)
+pairs
+
+# Select and display all numerical columns from df
+dfnum = df.select_dtypes(['int64', 'float64'])
+dfnum
+
+# Create a boxplot for the 'tenure' column
+dften = sns.boxplot(df['tenure'])
+dften
+
+# Generate a pandas profiling report
+# !pip install pandas-profiling
+# from pandas_profiling import ProfileReport
+# x = ProfileReport(df)
+# x
