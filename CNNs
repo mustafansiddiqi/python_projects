@@ -1,0 +1,97 @@
+#Convolutional Neural Network (CNN)
+# CIFAR-10 - Image Classification with CNNs
+
+import numpy as np
+import matplotlib.pyplot as plt
+from keras.datasets import cifar10
+from keras.utils import to_categorical
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, MaxPool2D, Flatten
+from sklearn.metrics import classification_report
+
+# Load Dataset
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+
+# Display dataset shape
+print("Training set shape:", x_train.shape)
+print("Test set shape:", x_test.shape)
+
+# Normalize Data
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+
+# One-Hot Encoding Labels
+y_cat_train = to_categorical(y_train, 10)
+y_cat_test = to_categorical(y_test, 10)
+
+# Build the CNN Model
+model = Sequential()
+
+# First Convolutional Layer
+model.add(Conv2D(filters=32, kernel_size=(4,4), input_shape=(32, 32, 3), activation='relu'))
+model.add(MaxPool2D(pool_size=(2, 2)))
+
+# Second Convolutional Layer
+model.add(Conv2D(filters=32, kernel_size=(4,4), activation='relu'))
+model.add(MaxPool2D(pool_size=(2, 2)))
+
+# Flatten the Data
+model.add(Flatten())
+
+# Fully Connected Layers
+model.add(Dense(256, activation='relu'))
+model.add(Dense(10, activation='softmax'))
+
+# Compile the Model
+model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+
+# Train the Model
+model.fit(x_train, y_cat_train, verbose=1, epochs=10)
+
+# Evaluate the Model
+eval_results = model.evaluate(x_test, y_cat_test)
+print("Loss and Accuracy:", eval_results)
+
+# Generate Predictions
+predictions = model.predict_classes(x_test)
+print(classification_report(y_test, predictions))
+
+# Save the Model
+model.save('cifar_10epochs.h5')
+
+# Optional: Build a Larger Model
+model = Sequential()
+
+# First Set of Layers
+model.add(Conv2D(filters=32, kernel_size=(4,4), input_shape=(32, 32, 3), activation='relu'))
+model.add(Conv2D(filters=32, kernel_size=(4,4), activation='relu'))
+model.add(MaxPool2D(pool_size=(2, 2)))
+
+# Second Set of Layers
+model.add(Conv2D(filters=64, kernel_size=(4,4), activation='relu'))
+model.add(Conv2D(filters=64, kernel_size=(4,4), activation='relu'))
+model.add(MaxPool2D(pool_size=(2, 2)))
+
+# Flatten the Data
+model.add(Flatten())
+
+# Fully Connected Layers
+model.add(Dense(512, activation='relu'))
+model.add(Dense(10, activation='softmax'))
+
+# Compile the Model
+model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+
+# Train the Larger Model
+model.fit(x_train, y_cat_train, verbose=1, epochs=20)
+
+# Evaluate the Larger Model
+eval_results = model.evaluate(x_test, y_cat_test)
+print("Loss and Accuracy (Larger Model):", eval_results)
+
+# Generate Predictions for Larger Model
+predictions = model.predict_classes(x_test)
+print(classification_report(y_test, predictions))
+
+# Save the Larger Model
+model.save('larger_CIFAR10_model.h5')
